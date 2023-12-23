@@ -32,8 +32,11 @@ async function run() {
     const mobileCollection = client.db("mobile-shop-task").collection("mobiles")
 
     app.get("/mobiles", async (req, res) => {
-        const { brand, min, max, memory, processor, type } = req.query;
+        const { brand, min, max, memory, processor, type, name, OS } = req.query;
         let query = {}
+        if(name){
+            query = {name: { $regex: new RegExp(name, 'i') } }
+        }
         if(brand){
             query = {brand: { $regex: new RegExp(brand, 'i') } }
         }
@@ -51,6 +54,9 @@ async function run() {
         }
         if(type){
             query = {type: { $regex: new RegExp(type, 'i') } }
+        }
+        if(OS){
+            query = {OS: { $regex: new RegExp(OS, 'i') } }
         }
        
         const cursor = mobileCollection.find(query)
